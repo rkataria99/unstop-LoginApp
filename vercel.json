@@ -3,21 +3,29 @@
     "builds": [
       {
         "src": "frontend/**/*",
-        "use": "@vercel/static"  
+        "use": "@vercel/static"
       },
       {
-        "src": "frontend/api/server.js",
-        "use": "@vercel/node"    
+        "src": "api/server.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "api/auth.js",
+        "use": "@vercel/node"
       }
     ],
     "routes": [
       {
+        "src": "/api/auth",
+        "dest": "/api/auth.js"
+      },
+      {
         "src": "/api/(.*)",
-        "dest": "/frontend/api/$1"  
+        "dest": "/api/server.js"
       },
       {
         "src": "/(.*)",
-        "dest": "/frontend/$1"      
+        "dest": "/frontend/$1"
       }
     ]
   }

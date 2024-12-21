@@ -2,7 +2,7 @@ const users = [
     { username: "emilys", password: "yourpassword", email: "emilys@example.com", gender: "female" }
   ];
   
-  module.exports = (req, res) => {
+  module.exports = async (req, res) => {
     if (req.method === "POST") {
       const { username, password, email } = req.body;
   
@@ -14,7 +14,7 @@ const users = [
   
       if (user) {
         const expiresInMins = 30;
-        const token = "your-jwt-token"; // simulated token
+        const token = "your-jwt-token";
   
         return res.status(200).json({
           user: {
