@@ -5,16 +5,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const userData = JSON.parse(localStorage.getItem("user"));
 
   if (userData) {
-    userName.textContent = "Michael Dam"; // Hardcoded username
+    userName.textContent = "Michael Dam"; 
     userEmail.textContent = `Email: ${userData.email}`;
-    userGender.textContent = `Gender: Female`; // Hardcoded gender
+    userGender.textContent = `Gender: Female`; 
   } else {
-    window.location.href = "index.html"; // Redirect to login page if no user data
+    window.location.href = "index.html"; 
   }
 
   const logoutButton = document.getElementById("logoutButton");
   logoutButton.addEventListener("click", () => {
     localStorage.removeItem("user");
-    window.location.href = "index.html"; // Redirect to login page after logout
+    window.location.href = "index.html"; 
   });
 });

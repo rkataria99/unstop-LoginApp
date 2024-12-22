@@ -4,10 +4,10 @@ function togglePassword() {
 
   if (passwordInput.type === "password") {
     passwordInput.type = "text";
-    eyeIcon.src = "images/eyeoff.png"; // Update to your 'eye off' icon path
+    eyeIcon.src = "images/eyeoff.png"; 
   } else {
     passwordInput.type = "password";
-    eyeIcon.src = "images/eyei.png"; // Update to your 'eye' icon path
+    eyeIcon.src = "images/eyei.png"; 
   }
 }
 
@@ -38,28 +38,25 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
       body: JSON.stringify(userData),
     });
 
-    // Log the response status for debugging
     console.log("Response status:", response.status); 
 
-    // Check if the response is 405 (Method Not Allowed) and handle it
     if (response.status === 405) {
-      alert("API returned 405 - Using fallback data!"); // Debugging alert for fallback
+      alert("API returned 405 - Using fallback data!"); 
 
-      // Hardcode the fallback user data
       const fallbackUser = {
         username: "emilys",
-        password: "yourpassword", // Replace with the actual password if needed
-        email: "emailid@example.com", // Replace with the actual email if needed
+        password: "yourpassword", 
+        email: "emailid@example.com", 
         expiresInMins: 30,
       };
 
-      // Save the hardcoded data to localStorage
+      // Save to localStorage
       localStorage.setItem("user", JSON.stringify(fallbackUser));
-      window.location.href = "home.html"; // Redirect to home page
+      window.location.href = "home.html"; 
     } else if (response.status === 200) {
       // Handle successful login
       const data = await response.json();
-      localStorage.setItem("user", JSON.stringify(data.user)); // Save the data to localStorage
+      localStorage.setItem("user", JSON.stringify(data.user)); 
       window.location.href = "home.html"; // Redirect to home page
     } else {
       // Show the error message

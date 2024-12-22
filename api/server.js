@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 
-const SECRET_KEY = process.env.JWT_SECRET || "8*^$lkjl@jLKlk2"; // Use environment variable in production
+const SECRET_KEY = process.env.JWT_SECRET || "8*^$lkjl@jLKlk2";
 
 app.use(cors());
 app.use(express.json());
@@ -38,9 +38,9 @@ app.post("/api/auth/login", (req, res) => {
   if (user) {
     // Generate JWT token
     const token = jwt.sign(
-      { username: user.username, email: user.email }, // Payload
-      SECRET_KEY, // Secret key
-      { expiresIn: "30m" } // Token expiration
+      { username: user.username, email: user.email }, 
+      SECRET_KEY, 
+      { expiresIn: "30m" } 
     );
 
     return res.status(200).json({
@@ -56,7 +56,7 @@ app.post("/api/auth/login", (req, res) => {
   }
 });
 
-// Protected route example
+// Protected route test
 app.get("/api/protected", (req, res) => {
   const authHeader = req.headers.authorization;
 
@@ -67,7 +67,7 @@ app.get("/api/protected", (req, res) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, SECRET_KEY); // Verify token
+    const decoded = jwt.verify(token, SECRET_KEY); 
     return res.status(200).json({ message: "Access granted", user: decoded });
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });
