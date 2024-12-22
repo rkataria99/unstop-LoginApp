@@ -53,8 +53,11 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
         body: JSON.stringify(userData),
       });
 
+      console.log("Response status:", response.status); // Log response status for debugging
+
       // Handle Method Not Allowed (405) case
       if (response.status === 405) {
+        alert("API returned 405 - Fallback triggered"); // Debugging alert for fallback
         const fallbackUser = {
           username: "emilys",
           password: "yourpassword", // Replace with the actual password if needed
