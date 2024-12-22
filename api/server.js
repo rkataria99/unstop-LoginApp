@@ -10,7 +10,7 @@ app.use((req, res, next) => {
   console.log(`[DEBUG] Request received: ${req.method} ${req.originalUrl}`);
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; style-src 'self' 'unsafe-inline';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; style-src 'self' 'unsafe-inline';"
   );
   next();
 });
