@@ -1,80 +1,83 @@
-// Function to toggle the visibility of the password input
-function togglePassword() {
-  const passwordInput = document.getElementById("password");
-  const eyeIcon = document.querySelector(".eye-icon");
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
 
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text"; // Change to 'text' to show password
-    eyeIcon.src = "images/eyeoff.png"; // Update to your 'eye off' icon path
+const SECRET_KEY = process.env.JWT_SECRET || "your-secret-key"; // Use environment variable in production
+
+app.use(cors());
+app.use(express.json());
+
+// Log all incoming requests
+app.use((req, res, next) => {
+  console.log(`[DEBUG] Request received: ${req.method} ${req.originalUrl}`);
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; style-src 'self' 'unsafe-inline';"
+  );
+  next();
+});
+
+// Mock user database
+const users = [
+  { username: "emilys", password: "yourpassword", email: "emilys@example.com", gender: "female" }
+];
+
+// Login route
+app.post("/api/auth/login", (req, res) => {
+  console.log("[DEBUG] POST /api/auth/login reached");
+
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required." });
+  }
+
+  const user = users.find(user => user.username === username && user.password === password);
+
+  if (user) {
+    // Generate JWT token
+    const token = jwt.sign(
+      { username: user.username, email: user.email }, // Payload
+      SECRET_KEY, // Secret key
+      { expiresIn: "30m" } // Token expiration
+    );
+
+    return res.status(200).json({
+      user: {
+        username: user.username,
+        email: user.email,
+        gender: user.gender,
+        token,
+      },
+    });
   } else {
-    passwordInput.type = "password"; // Change back to 'password' to hide
-    eyeIcon.src = "images/eyei.png"; // Update to your 'eye' icon path
-  }
-}
-
-// Add event listener for the login form submission
-document.getElementById("loginForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  console.log("Form submission intercepted");
-
-  const username = document.getElementById("username").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-
-  // Username validation on submit
-  if (username !== "emilys") {
-    alert("Invalid username. Only 'emilys' is allowed.");
-    return;  // Stop form submission if username is invalid
-  }
-
-  // Email validation
-  if (!email.match(/^\S+@\S+\.\S+$/)) {
-    alert("Invalid email format.");
-    return;  // Stop form submission if email is invalid
-  }
-
-  // Password validation
-  if (password.length < 8) {
-    alert("Password must be at least 8 characters long.");
-    return;  // Stop form submission if password is invalid
-  }
-
-  if (username && email && password) {
-    // Prepare data for POST request
-    const userData = {
-      username,
-      password,
-      email,
-    };
-
-    try {
-      // Sending POST request to the backend login API
-      const response = await fetch('https://unstop-login-app.vercel.app/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // If login is successful, store the token and user data in localStorage
-        localStorage.setItem("user", JSON.stringify(data.user)); // Save user data
-        localStorage.setItem("token", data.user.token); // Save JWT token
-
-        alert("Login successful");
-        window.location.href = "home.html"; // Redirect to home page
-      } else {
-        alert(data.message); // Show error message from the server
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      alert("Something went wrong!");
-    }
-  } else {
-    alert("Please fill in all fields.");
+    return res.status(401).json({ message: "Invalid username or password" });
   }
 });
+
+// Protected route example
+app.get("/api/protected", (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY); // Verify token
+    return res.status(200).json({ message: "Access granted", user: decoded });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+module.exports = app;
