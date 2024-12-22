@@ -13,6 +13,9 @@ function togglePassword() {
 
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  console.log("Form submission intercepted");
+
   const username = document.getElementById("username").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
