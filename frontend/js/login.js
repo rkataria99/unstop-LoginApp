@@ -11,7 +11,6 @@ function togglePassword() {
   }
 }
 
-
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const username = document.getElementById("username").value.trim();
@@ -31,7 +30,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     };
 
     try {
-      const response = await fetch('https://unstop-login-app.vercel.app/auth/login', {
+      const response = await fetch('https://unstop-login-app.vercel.app/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
