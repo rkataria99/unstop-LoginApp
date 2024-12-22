@@ -5,6 +5,13 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json()); // Updated to the built-in Express JSON parser
 
+// Log all incoming requests to check the HTTP method
+app.use((req, res, next) => {
+  console.log(`Request received: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+
 const users = [
   { username: "emilys", password: "yourpassword", email: "emilys@example.com", gender: "female" }
 ];
