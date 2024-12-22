@@ -1,11 +1,14 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
+const SECRET_KEY = process.env.JWT_SECRET || "your-secret-key"; // Use environment variable in production
 
 app.use(cors());
-app.use(express.json()); // Built-in Express JSON parser
+app.use(express.json());
 
-// Log all incoming requests to check the HTTP method
+// Log all incoming requests
 app.use((req, res, next) => {
   console.log(`[DEBUG] Request received: ${req.method} ${req.originalUrl}`);
   res.setHeader(
@@ -15,16 +18,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Mock user database
 const users = [
   { username: "emilys", password: "yourpassword", email: "emilys@example.com", gender: "female" }
 ];
 
-// POST route for login
+// Login route
 app.post("/api/auth/login", (req, res) => {
-  console.log("[DEBUG] POST /api/auth/login reached"); // Confirming request
+  console.log("[DEBUG] POST /api/auth/login reached");
 
-  const { username, password, email } = req.body;
-  
+  const { username, password } = req.body;
+
   if (!username || !password) {
     return res.status(400).json({ message: "Username and password are required." });
   }
@@ -32,20 +36,41 @@ app.post("/api/auth/login", (req, res) => {
   const user = users.find(user => user.username === username && user.password === password);
 
   if (user) {
-    const expiresInMins = 30;
-    const token = "your-jwt-token"; 
+    // Generate JWT token
+    const token = jwt.sign(
+      { username: user.username, email: user.email }, // Payload
+      SECRET_KEY, // Secret key
+      { expiresIn: "30m" } // Token expiration
+    );
 
     return res.status(200).json({
       user: {
         username: user.username,
-        email: email || user.email,
+        email: user.email,
         gender: user.gender,
-        expiresInMins,
         token,
       },
     });
   } else {
     return res.status(401).json({ message: "Invalid username or password" });
+  }
+});
+
+// Protected route example
+app.get("/api/protected", (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY); // Verify token
+    return res.status(200).json({ message: "Access granted", user: decoded });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 });
 

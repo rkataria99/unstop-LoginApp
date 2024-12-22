@@ -4,18 +4,19 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.20.3",
+    "concurrently": "^7.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "concurrently": "^7.0.0",   
-    "serve": "^14.0.0"          
+    "jsonwebtoken": "^9.0.2",
+    "serve": "^14.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "serve ./frontend",  
-    "dev:backend": "node ./frontend/api/server.js",  
+    "dev:frontend": "serve ./frontend",
+    "dev:backend": "node ./frontend/api/server.js",
     "start": "npm run start:frontend && npm run start:backend",
-    "start:frontend": "serve ./frontend",  
-    "start:backend": "node ./frontend/api/server.js" 
+    "start:frontend": "serve ./frontend",
+    "start:backend": "node ./frontend/api/server.js"
   }
 }

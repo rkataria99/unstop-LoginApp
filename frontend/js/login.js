@@ -20,12 +20,13 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
+  // Validations
   if (username !== "emilys") return alert("Invalid username. Only 'emilys' is allowed.");
   if (!email.match(/^\S+@\S+\.\S+$/)) return alert("Invalid email format.");
   if (password.length < 8) return alert("Password must be at least 8 characters long.");
 
   if (username && email && password) {
-    // Sending POST request to the backend login API
+    // Prepare data for POST request
     const userData = {
       username,
       password,
@@ -33,6 +34,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     };
 
     try {
+      // Sending POST request to the backend login API
       const response = await fetch('https://unstop-login-app.vercel.app/api/auth/login', {
         method: 'POST',
         headers: {
@@ -43,12 +45,15 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
       const data = await response.json();
 
-      if (response.status === 200) {
-        // Storing user data in localStorage
-        localStorage.setItem("user", JSON.stringify(data.user)); // Save the data to localStorage
+      if (response.ok) {
+        // If login is successful, store the token and user data in localStorage
+        localStorage.setItem("user", JSON.stringify(data.user)); // Save user data
+        localStorage.setItem("token", data.user.token); // Save JWT token
+
+        alert("Login successful");
         window.location.href = "home.html"; // Redirect to home page
       } else {
-        alert(data.message); // Show error message
+        alert(data.message); // Show error message from the server
       }
     } catch (error) {
       console.error("Error during login:", error);
