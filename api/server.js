@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 
 app.use(cors());
-app.use(express.json()); // Updated to the built-in Express JSON parser
+app.use(express.json()); // Built-in Express JSON parser
 
 // Log all incoming requests to check the HTTP method
 app.use((req, res, next) => {
@@ -15,13 +15,14 @@ app.use((req, res, next) => {
   next();
 });
 
-
 const users = [
   { username: "emilys", password: "yourpassword", email: "emilys@example.com", gender: "female" }
 ];
 
-app.post("/auth/login", (req, res) => {
-  console.log("[DEBUG] POST /auth/login reached");
+// POST route for login
+app.post("/api/auth/login", (req, res) => {
+  console.log("[DEBUG] POST /api/auth/login reached"); // Confirming request
+
   const { username, password, email } = req.body;
   
   if (!username || !password) {
@@ -46,6 +47,12 @@ app.post("/auth/login", (req, res) => {
   } else {
     return res.status(401).json({ message: "Invalid username or password" });
   }
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
