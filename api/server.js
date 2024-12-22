@@ -7,7 +7,7 @@ app.use(express.json()); // Updated to the built-in Express JSON parser
 
 // Log all incoming requests to check the HTTP method
 app.use((req, res, next) => {
-  console.log(`Request received: ${req.method} ${req.originalUrl}`);
+  console.log(`[DEBUG] Request received: ${req.method} ${req.originalUrl}`);
   next();
 });
 
@@ -17,6 +17,7 @@ const users = [
 ];
 
 app.post("/auth/login", (req, res) => {
+  console.log("[DEBUG] POST /auth/login reached");
   const { username, password, email } = req.body;
   
   if (!username || !password) {
