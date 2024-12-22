@@ -33,8 +33,8 @@ const users = [
     
     // Handle GET request by returning a 405 Method Not Allowed
     else if (req.method === "GET") {
-      //return res.status(405).json({ message: '"username": "emilys","password": "your password","email": "email id ","expiresInMins": 30' });
-      return res.status(405).json({ message: "Method Not Allowed" });
+      return res.status(405).json({ message: '"username": "emilys","password": "your password","email": "email id ","expiresInMins": 30' });
+      //return res.status(405).json({ message: "Method Not Allowed" });
     }
   
     // Handle unsupported methods (like PUT, DELETE) with a 405 status
