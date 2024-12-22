@@ -12,7 +12,7 @@ function togglePassword() {
 }
 
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
-  event.preventDefault(); // Prevent the default form submission
+  event.preventDefault(); // Prevent the form from submitting
 
   console.log("Form submission intercepted");
 
@@ -21,18 +21,24 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
+  // Debugging - check values
+  console.log(`Username: ${username}, Email: ${email}, Password: ${password}`);
+
   // Validation checks
   if (username !== "emilys") {
+    console.log("Invalid username"); // Debugging message
     alert("Invalid username. Only 'emilys' is allowed.");
     return; // Stop further execution if validation fails
   }
 
   if (!email.match(/^\S+@\S+\.\S+$/)) {
+    console.log("Invalid email format"); // Debugging message
     alert("Invalid email format.");
     return; // Stop further execution if validation fails
   }
 
   if (password.length < 8) {
+    console.log("Password too short"); // Debugging message
     alert("Password must be at least 8 characters long.");
     return; // Stop further execution if validation fails
   }
