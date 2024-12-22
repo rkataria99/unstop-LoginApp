@@ -1,83 +1,73 @@
-const express = require("express");
-const app = express();
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
+function togglePassword() {
+  const passwordInput = document.getElementById("password");
+  const eyeIcon = document.querySelector(".eye-icon");
 
-const SECRET_KEY = process.env.JWT_SECRET || "your-secret-key"; // Use environment variable in production
-
-app.use(cors());
-app.use(express.json());
-
-// Log all incoming requests
-app.use((req, res, next) => {
-  console.log(`[DEBUG] Request received: ${req.method} ${req.originalUrl}`);
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; style-src 'self' 'unsafe-inline';"
-  );
-  next();
-});
-
-// Mock user database
-const users = [
-  { username: "emilys", password: "yourpassword", email: "emilys@example.com", gender: "female" }
-];
-
-// Login route
-app.post("/api/auth/login", (req, res) => {
-  console.log("[DEBUG] POST /api/auth/login reached");
-
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required." });
-  }
-
-  const user = users.find(user => user.username === username && user.password === password);
-
-  if (user) {
-    // Generate JWT token
-    const token = jwt.sign(
-      { username: user.username, email: user.email }, // Payload
-      SECRET_KEY, // Secret key
-      { expiresIn: "30m" } // Token expiration
-    );
-
-    return res.status(200).json({
-      user: {
-        username: user.username,
-        email: user.email,
-        gender: user.gender,
-        token,
-      },
-    });
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    eyeIcon.src = "images/eyeoff.png"; // Change to your 'eye off' icon path
   } else {
-    return res.status(401).json({ message: "Invalid username or password" });
+    passwordInput.type = "password";
+    eyeIcon.src = "images/eyei.png"; // Change to your 'eye on' icon path
   }
-});
+}
 
-// Protected route example
-app.get("/api/protected", (req, res) => {
-  const authHeader = req.headers.authorization;
+document.getElementById("loginForm").addEventListener("submit", async (event) => {
+  event.preventDefault(); // Prevent the default form submission
 
-  if (!authHeader) {
-    return res.status(401).json({ message: "No token provided" });
+  console.log("Form submission intercepted");
+
+  // Get form values
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  // Validation checks
+  if (username !== "emilys") {
+    alert("Invalid username. Only 'emilys' is allowed.");
+    return; // Stop further execution if validation fails
   }
 
-  const token = authHeader.split(" ")[1];
+  if (!email.match(/^\S+@\S+\.\S+$/)) {
+    alert("Invalid email format.");
+    return; // Stop further execution if validation fails
+  }
+
+  if (password.length < 8) {
+    alert("Password must be at least 8 characters long.");
+    return; // Stop further execution if validation fails
+  }
+
+  // If all validations pass, proceed with login
+  const userData = {
+    username,
+    password,
+    email,
+  };
 
   try {
-    const decoded = jwt.verify(token, SECRET_KEY); // Verify token
-    return res.status(200).json({ message: "Access granted", user: decoded });
-  } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    // Send POST request to backend
+    const response = await fetch('https://unstop-login-app.vercel.app/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Save user data and token in localStorage if login is successful
+      localStorage.setItem("user", JSON.stringify(data.user)); // Save user data
+      localStorage.setItem("token", data.user.token); // Save JWT token
+
+      alert("Login successful");
+      window.location.href = "home.html"; // Redirect to home page
+    } else {
+      alert(data.message); // Show error message from the server
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    alert("Something went wrong!");
   }
 });
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-module.exports = app;
