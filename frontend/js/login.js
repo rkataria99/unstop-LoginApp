@@ -30,7 +30,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     };
 
     try {
-      const response = await fetch('https://unstop-login-app.vercel.app/api/auth', {
+      const response = await fetch('https://unstop-login-app.vercel.app/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
