@@ -38,6 +38,12 @@ const users = [
     }
   
     // Handle unsupported methods (like PUT, DELETE) with a 405 status
-    return res.status(405).json({ message: '"username": "emilys","password": "your password","email": "email id ","expiresInMins": 30' });
+    return res.status(405).json({
+        username: "emilys",
+        password: "yourpassword",
+        email: "example@gmail.com",
+        expiresInMins: 30
+      });
+      
   };
   
