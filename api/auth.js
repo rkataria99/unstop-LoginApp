@@ -3,6 +3,7 @@ const users = [
   ];
   
   module.exports = async (req, res) => {
+    // Handle POST request for login
     if (req.method === "POST") {
       const { username, password, email } = req.body;
   
@@ -28,8 +29,14 @@ const users = [
       } else {
         return res.status(401).json({ message: "Invalid username or password" });
       }
-    } else {
+    } 
+    
+    // Handle GET request by returning a 405 Method Not Allowed
+    else if (req.method === "GET") {
       return res.status(405).json({ message: "Method Not Allowed" });
     }
+  
+    // Handle unsupported methods (like PUT, DELETE) with a 405 status
+    return res.status(405).json({ message: "Method Not Allowed" });
   };
   
