@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 
-const SECRET_KEY = process.env.JWT_SECRET || "your-secret-key"; // Use environment variable in production
+const SECRET_KEY = process.env.JWT_SECRET || "8*^$lkjl@jLKlk2"; // Use environment variable in production
 
 app.use(cors());
 app.use(express.json());
