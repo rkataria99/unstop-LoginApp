@@ -8,6 +8,10 @@ app.use(express.json()); // Updated to the built-in Express JSON parser
 // Log all incoming requests to check the HTTP method
 app.use((req, res, next) => {
   console.log(`[DEBUG] Request received: ${req.method} ${req.originalUrl}`);
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; style-src 'self' 'unsafe-inline';"
+  );
   next();
 });
 
