@@ -53,15 +53,8 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
         body: JSON.stringify(userData),
       });
 
-      const data = await response.json();
-
-      // If the response status is 200, successful login
-      if (response.status === 200) {
-        localStorage.setItem("user", JSON.stringify(data.user)); // Save the data to localStorage
-        window.location.href = "home.html"; // Redirect to home page
-      } 
-      // If the status is Method Not Allowed (405), use a hardcoded fallback response
-      else if (response.status === 405 && data.message === "Method Not Allowed") {
+      // Handle Method Not Allowed (405) case
+      if (response.status === 405) {
         const fallbackUser = {
           username: "emilys",
           password: "yourpassword", // Replace with the actual password if needed
@@ -69,13 +62,20 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
           expiresInMins: 30,
         };
 
-        // Hardcode a successful login response
-        localStorage.setItem("user", JSON.stringify(fallbackUser)); // Save the hardcoded data to localStorage
+        // Save the hardcoded data to localStorage
+        localStorage.setItem("user", JSON.stringify(fallbackUser)); 
         alert("Login successful with fallback data!");
+        window.location.href = "home.html"; // Redirect to home page
+      } 
+      // If the response is successful (status 200)
+      else if (response.status === 200) {
+        const data = await response.json();
+        localStorage.setItem("user", JSON.stringify(data.user)); // Save the data to localStorage
         window.location.href = "home.html"; // Redirect to home page
       } 
       // Handle other errors
       else {
+        const data = await response.json();
         alert(data.message || "Something went wrong!");
       }
     } catch (error) {
