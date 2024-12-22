@@ -1,3 +1,17 @@
+function togglePassword() {
+  const passwordInput = document.getElementById("password");
+  const eyeIcon = document.querySelector(".eye-icon");
+
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    eyeIcon.src = "images/eyeoff.png"; // Update to your 'eye off' icon path
+  } else {
+    passwordInput.type = "password";
+    eyeIcon.src = "images/eyei.png"; // Update to your 'eye' icon path
+  }
+}
+
+
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const username = document.getElementById("username").value.trim();
@@ -17,7 +31,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     };
 
     try {
-      const response = await fetch('https://unstop-login-app.vercel.app/api/auth', {
+      const response = await fetch('https://unstop-login-app.vercel.app/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
