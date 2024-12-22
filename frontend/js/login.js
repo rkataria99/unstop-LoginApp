@@ -1,16 +1,18 @@
+// Function to toggle the visibility of the password input
 function togglePassword() {
   const passwordInput = document.getElementById("password");
   const eyeIcon = document.querySelector(".eye-icon");
 
   if (passwordInput.type === "password") {
-    passwordInput.type = "text";
+    passwordInput.type = "text"; // Change to 'text' to show password
     eyeIcon.src = "images/eyeoff.png"; // Update to your 'eye off' icon path
   } else {
-    passwordInput.type = "password";
+    passwordInput.type = "password"; // Change back to 'password' to hide
     eyeIcon.src = "images/eyei.png"; // Update to your 'eye' icon path
   }
 }
 
+// Add event listener for the login form submission
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -20,10 +22,23 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  // Validations
-  if (username !== "emilys") return alert("Invalid username. Only 'emilys' is allowed.");
-  if (!email.match(/^\S+@\S+\.\S+$/)) return alert("Invalid email format.");
-  if (password.length < 8) return alert("Password must be at least 8 characters long.");
+  // Username validation on submit
+  if (username !== "emilys") {
+    alert("Invalid username. Only 'emilys' is allowed.");
+    return;  // Stop form submission if username is invalid
+  }
+
+  // Email validation
+  if (!email.match(/^\S+@\S+\.\S+$/)) {
+    alert("Invalid email format.");
+    return;  // Stop form submission if email is invalid
+  }
+
+  // Password validation
+  if (password.length < 8) {
+    alert("Password must be at least 8 characters long.");
+    return;  // Stop form submission if password is invalid
+  }
 
   if (username && email && password) {
     // Prepare data for POST request
